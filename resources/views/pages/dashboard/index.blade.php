@@ -31,8 +31,7 @@
                     <div class="card-body">
 
                         <p class="card-text">
-                            Selamat datang di aplikasi sistem informasi pengelolaan data kegiatan kegiatan
-                            legistlatif.
+                            Selamat datang di aplikasi sistem informasi pengelolaan data kegiatan legistlatif.
                         </p>
                     </div>
                 </div>

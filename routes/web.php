@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +23,7 @@ Route::get('/user', [UserController::class, 'index'])->name('user.index');
 Route::post('/user/data', [UserController::class, 'data'])->name('user.data');
 Route::post('/user/save', [UserController::class, 'save'])->name('user.save');
 Route::post('/user/delete', [UserController::class, 'delete'])->name('user.delete');
+Route::get('/kegiatan', [KegiatanController::class, 'index'])->name('kegiatan.index');
+Route::get('/kegiatan/create', [KegiatanController::class, 'create'])->name('kegiatan.create');
+Route::post('/kegiatan/data', [KegiatanController::class, 'data'])->name('kegiatan.data');
+Route::post('/kegiatan/save', [KegiatanController::class, 'save'])->name('kegiatan.save');
