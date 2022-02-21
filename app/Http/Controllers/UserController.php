@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Whoops\Run;
 
 class UserController extends Controller
 {
@@ -86,6 +86,54 @@ class UserController extends Controller
             'message' => 'Data berhasil dihapus',
             'data' => $user
         ];
+        return response()->json($response, 200);
+    }
+
+    public function login()
+    {
+        $data = [
+            'title' => 'Login'
+        ];
+        return view('pages.user.login')->with($data);
+    }
+
+    public function login_user(Request $request)
+    {
+        $data_validator = [
+            'username' => 'required|exists:users,username',
+            'password' => 'required'
+        ];
+
+        $validator = Validator::make($request->all(), $data_validator);
+
+        if ($validator->fails()) {
+            $response = [
+                'code' => 400,
+                'message' => $validator->errors()->first(),
+            ];
+        } else {
+            $user = User::where('username', $request->username)->first();
+            if (password_verify($request->password, $user->password)) {
+                $data_session = [
+                    'pangkalan_id' => $user->id,
+                    'pangkalan_username' => $user->username,
+                    'pangkalan_name' => $user->name,
+                    'pangkalan_level' => $user->level
+                ];
+                session()->put($data_session);
+
+                $response = [
+                    'code' => 200,
+                    'message' => 'Login berhasil',
+                    'data' => $user
+                ];
+            } else {
+                $response = [
+                    'code' => 400,
+                    'message' => 'Username atau password salah',
+                ];
+            }
+        }
         return response()->json($response, 200);
     }
 }
