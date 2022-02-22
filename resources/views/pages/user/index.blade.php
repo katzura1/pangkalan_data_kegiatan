@@ -200,9 +200,6 @@
                         $('#modal_user button[type=submit]').prop('disabled', true);
                     },
                     complete : function(result){
-                        if(result['responseJSON']['code'] == 401){
-                            alert('Session expired, please relogin');
-                        }
                         $('#modal_user button[type=submit]').removeAttr('disabled');
                     },
                     success : function(data){
@@ -210,11 +207,19 @@
                             $('#modal_user').modal('hide');
                             table.ajax.reload();
                         }else{
-                            alert(data['message']??'Data not saved');
+                            Swal.fire({
+                                title : 'Error',
+                                text : data['message']??"Data not saved",
+                                icon : 'error'
+                            })
                         }
                     },
                     error : function(xhr, status, error){
-                        alert(xhr+' : '+error);
+                        Swal.fire({
+                            title : 'Error',
+                            text : xhr.responseText??"Data not saved",
+                            icon : 'error'
+                        })
                     }
                 })
             }
@@ -246,20 +251,25 @@
                         $('.btn-delete').prop('disabled', true);
                     },
                     complete : function(result){
-                        if(result['responseJSON']['code'] == 401){
-                            alert('Session expired, please relogin');
-                        }
                         $('.btn-delete').removeAttr('disabled');
                     },
                     success : function(data){
                         if(data['code'] == 200){
                             table.ajax.reload();
                         }else{
-                            alert(data['message']??'Data not deleted');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: data['message']??'Data not deleted',
+                            })
                         }
                     },
                     error : function(xhr, status, error){
-                        alert(xhr+' : '+error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: xhr+' : '+error,
+                        })
                     }
                 })
             }

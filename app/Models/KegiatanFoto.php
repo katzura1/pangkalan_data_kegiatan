@@ -12,13 +12,13 @@ class KegiatanFoto extends Model
 
     protected $table = 'kegiatan_fotos';
     protected $fillable = [
-        'id_kegiatan',
+        'kegiatan_id',
         'foto',
     ];
     protected $hidden = [];
 
     public function kegiatan()
     {
-        return $this->belongsTo(Kegiatan::class, 'id_kegiatan', 'id');
+        return $this->belongsTo(Kegiatan::class, 'kegiatan_id', 'id');
     }
 }

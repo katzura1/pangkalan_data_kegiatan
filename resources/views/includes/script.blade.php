@@ -19,6 +19,10 @@
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
 <!-- Select2 -->
 <script src="{{  asset('plugins/select2/js/select2.full.min.js') }}"></script>
+<!-- SweetAlert2 -->
+<script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js')}}"></script>
+<!-- Toastr -->
+<script src="{{ asset('plugins/toastr/toastr.min.js')}}"></script>
 <!-- InputMask -->
 <script src="{{  asset('plugins/moment/moment.min.js') }}"></script>
 <script src="{{  asset('plugins/inputmask/jquery.inputmask.min.js') }}"></script>
@@ -62,6 +66,6 @@
 
         set_menu(url,url_segment1,url_segment2);
         bsCustomFileInput.init();
-        $('.select').select2();
+        // $('.select').select2();
     })
 </script>

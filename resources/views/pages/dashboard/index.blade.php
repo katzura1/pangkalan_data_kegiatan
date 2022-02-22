@@ -23,28 +23,27 @@
 <div class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg">
                 <div class="card card-danger card-outline">
                     <div class="card-header">
-                        <h5 class="card-title">Selamat Datang</h5>
+                        <h5 class="card-title"></h5>
                     </div>
                     <div class="card-body">
+                        <table class="table" id="table_data">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nama Kegiatan</th>
+                                    <th>Tanggal Kegiatan</th>
+                                    <th>Pelaksana Kegiatan</th>
+                                    <th>Detail</th>
+                                    <th>Export</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                        <p class="card-text">
-                            Selamat datang di aplikasi sistem informasi pengelolaan data kegiatan legistlatif.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="card card-primary card-outline">
-                    <div class="card-header">
-                        <h5 class="card-title">Rangkuman Data</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">
-                            Sudah terdapat <b>{{ $data['jumlah_kegiatan']??0 }}</b> kegiatan yang telah dibuat dan <b>{{
-                                $data['jumlah_user']??0 }}</b> pengguna yang terdaftar.
-                        </p>
+                            </tbody>
+                        </table>
                     </div>
                 </div><!-- /.card -->
             </div>
@@ -55,3 +54,58 @@
 </div>
 <!-- /.content -->
 @endsection
+
+@push('after-scripts')
+<script>
+    $(document).ready(function(){
+        var table = $('#table_data').DataTable({
+            ajax : {
+                url : "{{ route('kegiatan.data') }}",
+                type : "POST",
+                data : {
+                    _token : "{{ csrf_token() }}"
+                },
+            },
+            processing : true,
+            order : [],
+            columns : [
+                {
+                    data : 'id',
+                    orderable : false,
+                    searchable : false,
+                    className : 'no-export',
+                },
+                {
+                    data : 'nama_kegiatan',
+                },
+                {
+                    data : 'tanggal_kegiatan',
+                },
+                {
+                    data : 'pelaksana_kegiatan'
+                },
+                {
+                    data : 'id',
+                    orderable : false,
+                    render : function(data, type, row){
+                        return '<a class="btn btn-info btn-sm" href="{{ url("kegiatan/detail") }}/'+data+'" target="_blank"> <i class="fa fa-eye"></i> Detail</a>';
+                    }
+                },
+                {
+                    data : 'id',
+                    orderable : false,
+                    render : function(data, type, row){
+                        return '<a class="btn btn-danger btn-sm" href="{{ url("kegiatan/pdf") }}/'+data+'" target="_blank"> <i class="fa fa-file-pdf"></i> PDF</a>';
+                    }
+                },
+            ]
+        })
+
+        table.on( 'order.dt search.dt', function () {
+            table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+                cell.innerHTML = i+1;
+            } );
+        } ).draw();
+    });
+</script>
+@endpush

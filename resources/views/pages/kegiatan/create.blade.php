@@ -6,12 +6,13 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Dashboard Page</h1>
+                <h1 class="m-0">Tambah Kegiatan</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Dashboard</li>
+                    <li class="breadcrumb-item"><a href="{{ url('') }}">Home</a></li>
+                    <li class="breadcrumb-item "><a href="{{ route('kegiatan.index') }}">Kegiatan</a></li>
+                    <li class="breadcrumb-item active">Tambah</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -102,45 +103,50 @@
                         </div>
                         <div class="card-body">
                             <div class="form-group">
-                                <input type="file" name="kegiatan[]" id="kegiatan[]" placeholder="Kegiatan 1"
-                                    accept="images/*" required>
+                                <input type="file" class="form-control" name="kegiatan[]" id="kegiatan[]"
+                                    placeholder="Kegiatan 1" accept="image/*" required>
                             </div>
                             <div class="form-group">
-                                <input type="file" name="kegiatan[]" id="kegiatan[]" placeholder="Kegiatan 1"
-                                    accept="images/*" required>
+                                <input type="file" class="form-control" name="kegiatan[]" id="kegiatan[]"
+                                    placeholder="Kegiatan 1" accept="image/*">
                             </div>
                             <div class="form-group">
-                                <input type="file" name="kegiatan[]" id="kegiatan[]" placeholder="Kegiatan 1"
-                                    accept="images/*" required>
+                                <input type="file" class="form-control" name="kegiatan[]" id="kegiatan[]"
+                                    placeholder="Kegiatan 1" accept="image/*">
                             </div>
                             <div class="form-group">
-                                <input type="file" name="kegiatan[]" id="kegiatan[]" placeholder="Kegiatan 1"
-                                    accept="images/*" required>
+                                <input type="file" class="form-control" name="kegiatan[]" id="kegiatan[]"
+                                    placeholder="Kegiatan 1" accept="image/*">
                             </div>
                             <div class="form-group">
-                                <input type="file" name="kegiatan[]" id="kegiatan[]" placeholder="Kegiatan 1"
-                                    accept="images/*" required>
+                                <input type="file" class="form-control" name="kegiatan[]" id="kegiatan[]"
+                                    placeholder="Kegiatan 1" accept="image/*">
                             </div>
                             <div class="form-group">
-                                <input type="file" name="kegiatan[]" id="kegiatan[]" placeholder="Kegiatan 1"
-                                    accept="images/*" required>
+                                <input type="file" class="form-control" name="kegiatan[]" id="kegiatan[]"
+                                    placeholder="Kegiatan 1" accept="image/*">
                             </div>
                             <div class="form-group">
-                                <input type="file" name="kegiatan[]" id="kegiatan[]" placeholder="Kegiatan 1"
-                                    accept="images/*" required>
+                                <input type="file" class="form-control" name="kegiatan[]" id="kegiatan[]"
+                                    placeholder="Kegiatan 1" accept="image/*">
                             </div>
                             <div class="form-group">
-                                <input type="file" name="kegiatan[]" id="kegiatan[]" placeholder="Kegiatan 1"
-                                    accept="images/*" required>
+                                <input type="file" class="form-control" name="kegiatan[]" id="kegiatan[]"
+                                    placeholder="Kegiatan 1" accept="image/*">
                             </div>
                             <div class="form-group">
-                                <input type="file" name="kegiatan[]" id="kegiatan[]" placeholder="Kegiatan 1"
-                                    accept="images/*" required>
+                                <input type="file" class="form-control" name="kegiatan[]" id="kegiatan[]"
+                                    placeholder="Kegiatan 1" accept="image/*">
                             </div>
                             <div class="form-group">
-                                <input type="file" name="kegiatan[]" id="kegiatan[]" placeholder="Kegiatan 1"
-                                    accept="images/*" required>
+                                <input type="file" class="form-control" name="kegiatan[]" id="kegiatan[]"
+                                    placeholder="Kegiatan 1" accept="image/*">
                             </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-save"></i> Save
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -158,13 +164,16 @@
     $(document).ready(function(){
         $('#form_kegiatan').submit(function(e){
             e.preventDefault();
-            var formData = new FormData(this[0]);
+            var formData = new FormData($(this)[0]);
             $.ajax({
                 url : "{{ route('kegiatan.save') }}",
                 type : "POST",
                 data : formData,
-                processData : false,
-                contentType : false,
+                processData: false,
+                contentType: false,
+                cache: false,
+                enctype: 'multipart/form-data',
+                type: 'POST',
                 beforeSend : function(){
                     $('button[type=submit]').prop('disabled',true);
                 },
@@ -172,11 +181,11 @@
                     $('button[type=submit]').removeAttr('disabled');
                 },
                 success : function(response){
-                    if(response.status == 'success'){
+                    if(response.code == 200){
                         swal.fire({
                             title : 'Berhasil',
                             text : 'Data berhasil disimpan',
-                            type : 'success',
+                            icon : 'success',
                             showConfirmButton : false,
                             timer : 1500
                         });
@@ -186,12 +195,21 @@
                     }else{
                         swal.fire({
                             title : 'Gagal',
-                            text : 'Data gagal disimpan',
-                            type : 'error',
+                            text : result.message??'Data gagal disimpan',
+                            icon : 'error',
                             showConfirmButton : false,
                             timer : 1500
                         });
                     }
+                },
+                error : function(xhr, ajax, opt){
+                    Swal.fire({
+                        title : 'Gagal',
+                        text : 'Data gagal disimpan',
+                        icon : 'error',
+                        showConfirmButton : false,
+                        timer : 1500
+                    });
                 }
             })
         })

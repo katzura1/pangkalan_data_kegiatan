@@ -53,7 +53,6 @@
                                                 <th>Pelaksana</th>
                                                 <th>Nama Pimpinan</th>
                                                 <th>Pendamping</th>
-                                                <th>Foto</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -115,9 +114,6 @@
                 },
                 {
                     data : 'id',
-                },
-                {
-                    data : 'id',
                     orderable : false,
                     searchable : false,
                     className : 'no-export',
@@ -135,6 +131,8 @@
                                         class="fa fa-edit"></i> Edit</button>
                                 <button class="dropdown-item btn-delete" href="#"><i
                                         class="fa fa-trash"></i> Delete</button>
+                                <button class="dropdown-item btn-pdf" href="#"><i
+                                        class="fa fa-file-pdf"></i> PDF</button>
                             </div>
                         </div>
                         `;
@@ -148,6 +146,57 @@
                 cell.innerHTML = i+1;
             } );
         } ).draw();
+
+        $('.btn-add').on('click', function(){
+            window.location.href="{{ route('kegiatan.create') }}";
+        })
+
+        $('#table_data tbody').on('click', '.btn-edit' , function(){
+            var data = table.row($(this).parents('tr')).data();
+            window.location.href="{{ url('kegiatan/edit') }}/"+data.id;
+        })
+
+        $('#table_data tbody').on('click', '.btn-pdf' , function(){
+            var data = table.row($(this).parents('tr')).data();
+            window.open("{{ url('kegiatan/pdf') }}/"+data.id);
+        })
+
+        $('#table_data tbody').on('click', '.btn-delete', function(){
+            var data = table.row($(this).parents('tr')).data();
+            $.ajax({
+                url : "{{ url('/kegiatan/delete') }}/"+data['id'],
+                type : "POST",
+                data : {
+                    _token : "{{ csrf_token() }}"
+                },
+                beforeSend : function(){},
+                complete : function(data){},
+                success : function(data){
+                    if(data.code == 200){
+                        Swal.fire({
+                            icon: 'success',
+                            // title: 'Oops...',
+                            text: 'Data Successfully delete!',
+                            timer : 1500,
+                        });
+                        table.ajax.reload();
+                    }else{
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!'
+                        });
+                    }
+                },
+                error : function(ajax, opt, xhr){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong!'
+                    });
+                }
+            })
+        })
     })
 </script>
 @endpush

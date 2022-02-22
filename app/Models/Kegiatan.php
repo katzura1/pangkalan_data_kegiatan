@@ -17,6 +17,7 @@ class Kegiatan extends Model
         'pelaksana_kegiatan',
         'nama_pimpinan',
         'pendamping',
+        'deskripsi_kegiatan',
         'id_user',
     ];
 
@@ -25,5 +26,10 @@ class Kegiatan extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user', 'id');
+    }
+
+    public function kegiatan_foto()
+    {
+        return $this->hasMany(KegiatanFoto::class, 'kegiatan_id', 'id');
     }
 }

@@ -135,4 +135,10 @@ class UserController extends Controller
         }
         return response()->json($response, 200);
     }
+
+    public function logout_user(Request $request)
+    {
+        session()->flush();
+        return redirect()->route('login');
+    }
 }
