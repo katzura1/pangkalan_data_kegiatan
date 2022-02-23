@@ -33,7 +33,8 @@ class UserController extends Controller
     {
         $id = $request->id;
         $data_validator = [
-            'username' => 'required|unique:users,username' . ($id == null ? '' : ',' . $id . ',id,deleted_at,NULL'),
+            // 'username' => 'required|unique:users,username' . ($id == null ? '' : ',' . $id . ',id') . ',deleted_at,NULL',
+            'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
             'name' => 'required',
             'password' => ($id == null ? 'required' : 'nullable'),
             'level' => 'required'
