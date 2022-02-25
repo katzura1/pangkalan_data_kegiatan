@@ -29,9 +29,9 @@
         <!-- /.login-logo -->
         <div class="card">
             <div class="card-body login-card-body">
-                <p class="login-box-msg">Sign in to start your session</p>
+                <p class="login-box-msg">Registration media user</p>
 
-                <form id="form_login" method="POST">
+                <form id="form_register" method="POST">
                     @csrf
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" placeholder="Username" name="username" required>
@@ -42,7 +42,15 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password" name="password" required>
+                        <input type="text" class="form-control" placeholder="Name" name="name" required>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Password" name="password" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -55,7 +63,7 @@
                         <!-- /.col -->
                         <div class="col-4">
                             <button type="submit" class="btn btn-primary btn-block">
-                                Sign In
+                                Register
                             </button>
                         </div>
                         <!-- /.col -->
@@ -80,10 +88,10 @@
 
     <script>
         $(document).ready(function(){
-            $('#form_login').on('submit', function(e){
+            $('#form_register').on('submit', function(e){
                 e.preventDefault();
                 $.ajax({
-                    url: "{{ route('user.login') }}",
+                    url: "{{ route('user.register') }}",
                     type: "POST",
                     data: $(this).serialize(),
                     beforeSend : function(){
@@ -94,7 +102,16 @@
                     },
                     success: function(data){
                         if(data.code == 200){
-                            window.location.href = "{{ route('dashboard') }}";
+                            Swal.fire({
+                                title: 'Success!',
+                                text: data.message,
+                                type: 'success',
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.value) {
+                                    window.location.href = "{{ route('user.login') }}";
+                                }
+                            })
                         }else{
                             Swal.fire({
                                 icon: 'error',

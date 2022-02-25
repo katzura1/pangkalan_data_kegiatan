@@ -77,6 +77,8 @@
 @push('after-scripts')
 <script>
     $(document).ready(function(){
+        var level = "{{ session('pangkalan_level') }}";
+
         var table = $('#table_data').DataTable({
             ajax : {
                 url : "{{ route('kegiatan.data') }}",
@@ -118,24 +120,42 @@
                     searchable : false,
                     className : 'no-export',
                     render : function(data, type, row){
-                        return `
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-sm btn-primary btn-flat">Action</button>
-                            <button type="button"
-                                class="btn btn-sm btn-primary btn-flat dropdown-toggle dropdown-icon"
-                                data-toggle="dropdown" aria-expanded="false">
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <div class="dropdown-menu" role="menu" style="">
-                                <button class="dropdown-item btn-edit" href="#"><i
-                                        class="fa fa-edit"></i> Edit</button>
-                                <button class="dropdown-item btn-delete" href="#"><i
-                                        class="fa fa-trash"></i> Delete</button>
-                                <button class="dropdown-item btn-pdf" href="#"><i
-                                        class="fa fa-file-pdf"></i> PDF</button>
+                        if(level == 'admin'){
+                            return `
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-primary btn-flat">Action</button>
+                                <button type="button"
+                                    class="btn btn-sm btn-primary btn-flat dropdown-toggle dropdown-icon"
+                                    data-toggle="dropdown" aria-expanded="false">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <div class="dropdown-menu" role="menu" style="">
+                                    <button class="dropdown-item btn-edit" href="#"><i
+                                            class="fa fa-edit"></i> Edit</button>
+                                    <button class="dropdown-item btn-delete" href="#"><i
+                                            class="fa fa-trash"></i> Delete</button>
+                                    <button class="dropdown-item btn-pdf" href="#"><i
+                                            class="fa fa-file-pdf"></i> PDF</button>
+                                </div>
                             </div>
-                        </div>
-                        `;
+                            `;
+                        }else{
+                            return `
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-primary btn-flat">Action</button>
+                                <button type="button"
+                                    class="btn btn-sm btn-primary btn-flat dropdown-toggle dropdown-icon"
+                                    data-toggle="dropdown" aria-expanded="false">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <div class="dropdown-menu" role="menu" style="">
+                                    <button class="dropdown-item btn-pdf" href="#"><i
+                                            class="fa fa-file-pdf"></i> PDF</button>
+                                </div>
+                            </div>
+                            `;
+                        }
+
                     }
                 }
             ]

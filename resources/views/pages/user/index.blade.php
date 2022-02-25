@@ -41,6 +41,15 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select name="select_status" id="select_status" class="form-control select">
+                                        <option value="0">Tidak Aktif</option>
+                                        <option value="1">Aktif</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="col-12 mt-2">
                                 <table class="table table-striped table-sm" id="table_data">
                                     <thead>
@@ -49,6 +58,7 @@
                                             <th>Username</th>
                                             <th>Name</th>
                                             <th>Level</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -123,6 +133,7 @@
                 type : "POST",
                 data : function(d){
                     d._token = "{{ csrf_token() }}";
+                    d.status = $('select[name=select_status]').val();
                 },
             },
             processing : true,
@@ -141,6 +152,16 @@
                 },
                 {
                     data : 'level'
+                },
+                {
+                    data : 'status',
+                    render : function(data, type, row){
+                        if(data == '1'){
+                            return '<button class="btn btn-sm btn-success btn-status">Aktif</button>';
+                        }else{
+                            return '<button class="btn btn-sm btn-danger btn-status">Tidak Aktif</button>';
+                        }
+                    }
                 },
                 {
                     data : 'id',
@@ -273,6 +294,49 @@
                     }
                 })
             }
+        })
+
+        $('#table_data tbody').on('click', '.btn-status', function(){
+            var row = table.row($(this).parents('tr')).data();
+            if(confirm('Apakah anda ingin '+(row['status']=='1'?'Menonaktifkan':'Aktifkan')+' akun ?')){
+                $.ajax({
+                    url : "{{ route('user.status') }}",
+                    type : "POST",
+                    data : {
+                        _token : "{{ csrf_token() }}",
+                        id : row.id,
+                        status : row['status'],
+                    },
+                    beforeSend : function(){
+                        // $('.btn-status').prop('disabled', true);
+                    },
+                    complete : function(result){
+                        // $('.btn-status').removeAttr('disabled');
+                    },
+                    success : function(data){
+                        if(data['code'] == 200){
+                            table.ajax.reload();
+                        }else{
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: data['message']??'Data not updated',
+                            })
+                        }
+                    },
+                    error : function(xhr, status, error){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: xhr+' : '+error,
+                        })
+                    }
+                })
+            }
+        })
+
+        $('select[name=select_status]').on('change', function(){
+            table.ajax.reload();
         })
     })
 </script>

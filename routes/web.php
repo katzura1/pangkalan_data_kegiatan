@@ -19,10 +19,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['check.login']], function () {
     Route::get('/login', [UserController::class, 'login'])->name('login');
+    Route::get('/register', [UserController::class, 'register'])->name('register');
 });
 
 Route::group(['middleware' => ['check.ajax']], function () {
     Route::post('/login', [UserController::class, 'login_user'])->name('user.login');
+    Route::post('/register', [UserController::class, 'register_user'])->name('user.register');
 });
 
 Route::group(['middleware' => ['check.session']], function () {
@@ -40,6 +42,7 @@ Route::group(['middleware' => ['check.session', 'check.ajax']], function () {
     Route::post('/user/data', [UserController::class, 'data'])->name('user.data');
     Route::post('/user/save', [UserController::class, 'save'])->name('user.save');
     Route::post('/user/delete', [UserController::class, 'delete'])->name('user.delete');
+    Route::post('/user/status', [UserController::class, 'change_status'])->name('user.status');
     Route::post('/kegiatan/data', [KegiatanController::class, 'data'])->name('kegiatan.data');
     Route::post('/kegiatan/save', [KegiatanController::class, 'save'])->name('kegiatan.save');
     Route::post('/kegiatan/delete/{id}', [KegiatanController::class, 'delete'])->name('kegiatan.delete');

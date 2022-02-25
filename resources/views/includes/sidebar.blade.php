@@ -18,6 +18,7 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                @if(session('pangkalan_level') == 'admin')
                 <li class="nav-item">
                     <a href="{{ route('user.index') }}" class="nav-link">
                         <i class="nav-icon fa fa-user"></i>
@@ -26,6 +27,8 @@
                         </p>
                     </a>
                 </li>
+                @endif
+                @if(in_array(session('pangkalan_level'), ['user','admin']))
                 <li class="nav-item">
                     <a href="{{ route('kegiatan.index') }}" class="nav-link">
                         <i class="nav-icon fa fa-tags"></i>
@@ -34,6 +37,7 @@
                         </p>
                     </a>
                 </li>
+                @endif
                 <li class="nav-item">
                     <a href="{{ route('user.logout') }}" class="nav-link">
                         <i class="nav-icon fa-solid fa-arrow-right-from-bracket"></i>

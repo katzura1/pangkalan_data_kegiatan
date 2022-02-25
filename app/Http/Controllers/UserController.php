@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -19,9 +20,19 @@ class UserController extends Controller
         return view('pages.user.index')->with($data);
     }
 
+    public function register()
+    {
+        $data = [
+            'title' => 'Register User'
+        ];
+
+        return view('pages.user.register')->with($data);
+    }
+
     public function data(Request $request)
     {
-        $data = User::all()->toArray();
+        $status = $request->status;
+        $data = User::all()->where('status', $status)->toArray();
         $final['draw'] = 1;
         $final['recordsTotal'] = sizeof($data);
         $final['recordsFiltered'] = sizeof($data);
@@ -52,7 +63,8 @@ class UserController extends Controller
                 'username' => $request->username,
                 'name' => $request->name,
                 'password' => $request->password,
-                'level' => $request->level
+                'level' => $request->level,
+                'status' => '1',
             ];
             $data['password'] = bcrypt($data['password']);
 
@@ -131,6 +143,87 @@ class UserController extends Controller
                 $response = [
                     'code' => 400,
                     'message' => 'Username atau password salah',
+                ];
+            }
+        }
+        return response()->json($response, 200);
+    }
+
+    public function register_user(Request $request)
+    {
+        $data_validator = [
+            'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
+            'name' => 'required',
+            'password' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $data_validator);
+
+        if ($validator->fails()) {
+            $response = [
+                'code' => 400,
+                'message' => $validator->errors()->first(),
+            ];
+        } else {
+            $data = [
+                'username' => $request->username,
+                'name' => $request->name,
+                'password' => $request->password,
+                'level' => 'media',
+                'status' => '0',
+            ];
+            $data['password'] = bcrypt($data['password']);
+
+            try {
+                DB::beginTransaction();
+                $user = User::create($data);
+                $response = [
+                    'code' => 200,
+                    'message' => 'Data berhasil disimpan',
+                    'data' => $user
+                ];
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                $response = [
+                    'code' => 400,
+                    'message' => $e->getMessage(),
+                ];
+            }
+        }
+        return response()->json($response, 200);
+    }
+
+    public function change_status(Request $request)
+    {
+        $data_validator = [
+            'id' => 'required',
+            'status' => 'required'
+        ];
+        $validator = Validator::make($request->all(), $data_validator);
+
+        if ($validator->fails()) {
+            $response = [
+                'code' => 400,
+                'message' => $validator->errors()->first(),
+            ];
+        } else {
+            try {
+                DB::beginTransaction();
+                $user = User::find($request->id);
+                $user->status = $request->status == '1' ? '0' : '1';
+                $user->save();
+                $response = [
+                    'code' => 200,
+                    'message' => 'Data berhasil disimpan',
+                    'data' => $user
+                ];
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                $response = [
+                    'code' => 400,
+                    'message' => $e->getMessage(),
                 ];
             }
         }
