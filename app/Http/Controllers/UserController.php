@@ -31,8 +31,10 @@ class UserController extends Controller
 
     public function data(Request $request)
     {
-        $status = $request->status;
-        $data = User::all()->where('status', $status)->toArray();
+        $status = $request->status ?? '0';
+        // dd($status);
+        $data = User::where('status', $status)->get();
+        // dd($data);
         $final['draw'] = 1;
         $final['recordsTotal'] = sizeof($data);
         $final['recordsFiltered'] = sizeof($data);
@@ -125,7 +127,12 @@ class UserController extends Controller
             ];
         } else {
             $user = User::where('username', $request->username)->first();
-            if (password_verify($request->password, $user->password)) {
+            if ($user->status == '0') {
+                $response = [
+                    'code' => 400,
+                    'message' => 'User tidak aktif',
+                ];
+            } else if (password_verify($request->password, $user->password)) {
                 $data_session = [
                     'pangkalan_id' => $user->id,
                     'pangkalan_username' => $user->username,

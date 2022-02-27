@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Pangkalan Data | Log in</title>
+    <title>Pangkalan Data | Register</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -59,6 +59,7 @@
                     </div>
                     <div class="row">
                         <div class="col-8">
+                            <a href="{{ route('login') }}">Login</a>
                         </div>
                         <!-- /.col -->
                         <div class="col-4">
